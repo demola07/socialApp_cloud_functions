@@ -11,6 +11,8 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
+const db = admin.firestore();
+
 const firebaseConfig = {
   apiKey: 'AIzaSyDQ7ZDyZco52r91kcEw494l2eIwxD0MvDQ',
   authDomain: 'socialapp-c82fa.firebaseapp.com',
@@ -26,8 +28,7 @@ firebase.initializeApp(firebaseConfig);
 
 app.get('/screams', async (req, res) => {
   try {
-    const data = await admin
-      .firestore()
+    const data = await db
       .collection('screams')
       .orderBy('createdAt', 'desc')
       .get();
@@ -52,10 +53,7 @@ app.post('/scream', async (req, res) => {
     createdAt: new Date().toISOString()
   };
   try {
-    const doc = await admin
-      .firestore()
-      .collection('screams')
-      .add(newScream);
+    const doc = await db.collection('screams').add(newScream);
     return res.json({
       message: `Document ${doc.id} created successfully`
     });
@@ -63,6 +61,45 @@ app.post('/scream', async (req, res) => {
     res.status(500).json({ error: 'something went wrong' });
     console.error(error);
   }
+});
+
+// Signup route
+app.post('/signup', (req, res) => {
+  const newUser = {
+    email: req.body.email,
+    password: req.body.password,
+    confirmPassword: req.body.confirmPassword,
+    handle: req.body.handle
+  };
+
+  // TODO: validate data
+  db.doc(`/users/${newUser.handle}`)
+    .get()
+    .then(doc => {
+      if (doc.exists) {
+        return res.status(400).json({
+          handle: 'This handle is already taken'
+        });
+      } else {
+        return firebase
+          .auth()
+          .createUserWithEmailAndPassword(newUser.email, newUser.password);
+      }
+    })
+    .then(data => {
+      return data.user.getIdToken();
+    })
+    .then(token => {
+      return res.status(201).json({ token });
+    })
+    .catch(error => {
+      console.error(error);
+      if (error.code === 'auth/email-already-in-use') {
+        return res.status(400).json({ email: 'Email already in use' });
+      } else {
+        return res.status(500).json({ error: error.code });
+      }
+    });
 });
 
 exports.api = functions.region('europe-west1').https.onRequest(app);
