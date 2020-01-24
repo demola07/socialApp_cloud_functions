@@ -3,6 +3,7 @@
 // // https://firebase.google.com/docs/functions/write-firebase-functions
 
 const functions = require('firebase-functions');
+const app = require('express')();
 
 const admin = require('firebase-admin');
 const serviceAccount = require('./utils/serviceAcctKey.json');
@@ -10,8 +11,18 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 });
 
-const express = require('express');
-const app = express();
+const firebaseConfig = {
+  apiKey: 'AIzaSyDQ7ZDyZco52r91kcEw494l2eIwxD0MvDQ',
+  authDomain: 'socialapp-c82fa.firebaseapp.com',
+  databaseURL: 'https://socialapp-c82fa.firebaseio.com',
+  projectId: 'socialapp-c82fa',
+  storageBucket: 'socialapp-c82fa.appspot.com',
+  messagingSenderId: '346717562810',
+  appId: '1:346717562810:web:3cb19d9d7a76ee4947df83',
+  measurementId: 'G-JJMDR1NXCB'
+};
+const firebase = require('firebase');
+firebase.initializeApp(firebaseConfig);
 
 app.get('/screams', async (req, res) => {
   try {
