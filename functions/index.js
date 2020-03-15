@@ -141,4 +141,10 @@ app.post('/signup', (req, res) => {
     });
 });
 
+app.post('/login', (req, res) => {
+  const user = {
+    email: req.body.email,
+    password: req.body.password
+  };
+});
 exports.api = functions.region('europe-west1').https.onRequest(app);
