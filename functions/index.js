@@ -118,8 +118,8 @@ app.post('/signup', (req, res) => {
       userId = data.user.uid;
       return data.user.getIdToken();
     })
-    .then(IdToken => {
-      token = IdToken;
+    .then(idToken => {
+      token = idToken;
       const userCredentials = {
         handle: newUser.handle,
         email: newUser.email,
@@ -147,4 +147,5 @@ app.post('/login', (req, res) => {
     password: req.body.password
   };
 });
+
 exports.api = functions.region('europe-west1').https.onRequest(app);
