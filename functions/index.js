@@ -46,7 +46,11 @@ app.get('/screams', async (req, res) => {
   }
 });
 
+//Post on scream
 app.post('/scream', async (req, res) => {
+  if (req.body.body.trim() === '') {
+    return res.status(400).json({ body: 'Body must not be empty' });
+  }
   const newScream = {
     body: req.body.body,
     userHandle: req.body.userHandle,
