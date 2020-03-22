@@ -2,7 +2,7 @@ const functions = require('firebase-functions');
 const app = require('express')();
 const FBAuth = require('./utils/fbAuth');
 
-const db = require('./utils/admin');
+const { db } = require('./utils/admin');
 
 const {
   getAllScreams,
@@ -48,7 +48,7 @@ exports.createNotificationOnLike = functions
       .then(doc => {
         if (doc.exists) {
           return db.doc(`/notifications/${snapshot.id}`).set({
-            createdAt: new Data().toIsoString(),
+            createdAt: new Date().toISOString(),
             recipient: doc.data().userHandle,
             sender: snapshot.data().userHandle,
             type: 'like',
@@ -90,7 +90,7 @@ exports.createNotificationOnComment = functions
       .then(doc => {
         if (doc.exists) {
           return db.doc(`/notifications/${snapshot.id}`).set({
-            createdAt: new Data().toIsoString(),
+            createdAt: new Date().toISOString(),
             recipient: doc.data().userHandle,
             sender: snapshot.data().userHandle,
             type: 'comment',
