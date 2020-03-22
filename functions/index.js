@@ -114,7 +114,7 @@ exports.createNotificationOnComment = functions
 
 exports.onUserImageChange = functions
   .region('europe-west1')
-  .firestore.document('/users/${userId}')
+  .firestore.document('/users/{userId}')
   .onUpdate(change => {
     console.log(change.before.data());
     console.log(change.after.data());
@@ -139,7 +139,7 @@ exports.onUserImageChange = functions
 
 exports.onScreamDelete = functions
   .region('europe-west1')
-  .firestore.document('/screams/${screamId}')
+  .firestore.document('/screams/{screamId}')
   .onDelete((snapshot, context) => {
     const screamId = context.params.screamId;
     const batch = db.batch();
