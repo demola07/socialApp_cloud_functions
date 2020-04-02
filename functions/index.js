@@ -2,6 +2,9 @@ const functions = require('firebase-functions');
 const app = require('express')();
 const FBAuth = require('./utils/fbAuth');
 
+const cors = require('cors');
+app.use(cors());
+
 const { db } = require('./utils/admin');
 
 const {
@@ -51,10 +54,7 @@ exports.createNotificationOnLike = functions
       .doc(`/screams/${snapshot.data().screamId}`)
       .get()
       .then(doc => {
-        if (
-          doc.exists &&
-          doc.data().userHandle !== snapshot.data().userHandle
-        ) {
+        if (doc.exists && doc.data().userHandle !== snapshot.data().userHandle) {
           return db.doc(`/notifications/${snapshot.id}`).set({
             createdAt: new Date().toISOString(),
             recipient: doc.data().userHandle,
@@ -92,10 +92,7 @@ exports.createNotificationOnComment = functions
       .doc(`/screams/${snapshot.data().screamId}`)
       .get()
       .then(doc => {
-        if (
-          doc.exists &&
-          doc.data().userHandle !== snapshot.data().userHandle
-        ) {
+        if (doc.exists && doc.data().userHandle !== snapshot.data().userHandle) {
           return db.doc(`/notifications/${snapshot.id}`).set({
             createdAt: new Date().toISOString(),
             recipient: doc.data().userHandle,
